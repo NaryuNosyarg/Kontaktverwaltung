@@ -66,7 +66,6 @@ public class Kontaktverwaltung implements Verwaltung {
 			bruce = new Contact("1", "Bruce", "Wayne", LocalDate.of(1975,
 					01, 10));
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		Address bwaddress = new Address("1", "Wayne Manor", "Gotham City",
@@ -88,7 +87,6 @@ public class Kontaktverwaltung implements Verwaltung {
 			contactList.add(new Contact("2", "Dick", "Grayson", LocalDate.of(1991,
 					03, 20)));
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

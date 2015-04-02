@@ -7,8 +7,6 @@ import javax.inject.Singleton;
 
 import org.controlsfx.dialog.Dialogs;
 
-import javafx.beans.binding.Bindings;
-import javafx.beans.binding.StringBinding;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -34,8 +32,6 @@ public class ContactEditDialogModel implements ViewModel {
 	private StringProperty placeProperty = new SimpleStringProperty();
 	private StringProperty countryProperty = new SimpleStringProperty();
 	private ObjectProperty<LocalDate> birthDateProperty = new SimpleObjectProperty<LocalDate>();
-	// private StringProperty formattedBirthDateProperty = new
-	// SimpleStringProperty();
 	private StringProperty emailProperty = new SimpleStringProperty();
 	private StringProperty telephoneProperty = new SimpleStringProperty();
 
@@ -109,17 +105,6 @@ public class ContactEditDialogModel implements ViewModel {
 				}
 			}
 		});
-
-		/*
-		 * StringBinding formattedDateBinding = Bindings.createStringBinding(
-		 * new Callable<String>() {
-		 * 
-		 * @Override public String call() throws Exception { return
-		 * DateUtil.format(birthDateProperty.getValue()); } },
-		 * birthDateProperty);
-		 * 
-		 * formattedBirthDateProperty.bind(formattedDateBinding);
-		 */
 
 	}
 
@@ -197,7 +182,6 @@ public class ContactEditDialogModel implements ViewModel {
 	}
 
 	public ObjectProperty<LocalDate> birthDateProperty() {
-		// return formattedBirthDateProperty;
 		return birthDateProperty;
 	}
 

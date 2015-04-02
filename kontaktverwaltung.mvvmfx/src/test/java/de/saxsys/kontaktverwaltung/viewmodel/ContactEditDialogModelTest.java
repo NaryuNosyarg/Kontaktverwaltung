@@ -2,9 +2,13 @@ package de.saxsys.kontaktverwaltung.viewmodel;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.function.Function;
+
 import org.junit.Before;
 import org.junit.Test;
 
+import de.saxsys.kontaktverwaltung.model.Kontaktverwaltung;
+import de.saxsys.kontaktverwaltung.model.Verwaltung;
 import eu.lestard.easydi.EasyDI;
 
 public class ContactEditDialogModelTest {
@@ -14,8 +18,18 @@ public class ContactEditDialogModelTest {
 
 	@Before
 	public void setup() {
+		
 		easyDI = new EasyDI();
+		easyDI.bindInterface(Verwaltung.class, Kontaktverwaltung.class);
 		viewModel = easyDI.getInstance(ContactEditDialogModel.class);
+		
+		viewModel.setDialogCloseFunction(new Function<Void, Void>() {
+
+			@Override
+			public Void apply(Void t) {
+				return null;
+			}
+		});
 	}
 
 	@Test

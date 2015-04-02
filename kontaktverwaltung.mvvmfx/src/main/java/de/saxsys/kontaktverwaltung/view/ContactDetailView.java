@@ -1,6 +1,7 @@
 package de.saxsys.kontaktverwaltung.view;
 
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.Function;
 
@@ -16,8 +17,11 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
+import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 
 @Singleton
@@ -115,7 +119,17 @@ public class ContactDetailView implements FxmlView<ContactDetailViewModel>,
 
 	@FXML
 	private void removeContact() {
-		viewModel.remove();
+		Alert alert = new Alert(AlertType.CONFIRMATION);
+		alert.setTitle("Achtung!");
+		alert.setHeaderText(null);
+		alert.setContentText("Wollen Sie den Kontakt wirklich löschen?");
+
+		Optional<ButtonType> result = alert.showAndWait();
+		if (result.get() == ButtonType.OK) {
+			viewModel.remove();
+		} else {
+			detailStage.show();
+		}
 	}
 
 }

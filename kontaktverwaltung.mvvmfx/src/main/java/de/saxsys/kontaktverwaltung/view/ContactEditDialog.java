@@ -24,7 +24,6 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 
-
 @Singleton
 public class ContactEditDialog implements FxmlView<ContactEditDialogModel>,
 		Initializable {
@@ -55,26 +54,26 @@ public class ContactEditDialog implements FxmlView<ContactEditDialogModel>,
 	private ContactEditDialogModel viewModel;
 	private final Stage parentStage;
 	private Parent root;
-	private Stage dialogStage;  
-	
+	private Stage dialogStage;
+
 	private static final String DATE_PATTERN = "dd.MM.yyyy";
-	
-	public ContactEditDialog(Stage stage){
+
+	public ContactEditDialog(Stage stage) {
 		this.parentStage = stage;
-		ViewTuple<ContactEditDialog,ContactEditDialogModel> viewTuple = FluentViewLoader.fxmlView(ContactEditDialog.class).codeBehind(this).load();
-		
+		ViewTuple<ContactEditDialog, ContactEditDialogModel> viewTuple = FluentViewLoader
+				.fxmlView(ContactEditDialog.class).codeBehind(this).load();
+
 		root = viewTuple.getView();
 
 		dialogStage = new Stage();
 		dialogStage.initOwner(parentStage);
 		dialogStage.setScene(new Scene(root));
 	}
-	
-	public boolean show(Contact contact){
+
+	public boolean show(Contact contact) {
 		viewModel.show(contact);
 		return viewModel.isOkClicked();
 	}
-
 
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		nameField.textProperty().bindBidirectional(viewModel.nameProperty());
@@ -87,22 +86,23 @@ public class ContactEditDialog implements FxmlView<ContactEditDialogModel>,
 		placeField.textProperty().bindBidirectional(viewModel.placeProperty());
 		countryField.textProperty().bindBidirectional(
 				viewModel.countryProperty());
-		birthDateField.valueProperty().bindBidirectional(viewModel.birthDateProperty());
+		birthDateField.valueProperty().bindBidirectional(
+				viewModel.birthDateProperty());
 		telephoneField.textProperty().bindBidirectional(
 				viewModel.telephoneProperty());
 		emailField.textProperty().bindBidirectional(viewModel.emailProperty());
-		
-        birthDateField.setConverter(converter);
-        
-        viewModel.setDialogShowAndWaitFunction(new Function<Void, Void>() {
+
+		birthDateField.setConverter(converter);
+
+		viewModel.setDialogShowAndWaitFunction(new Function<Void, Void>() {
 			@Override
 			public Void apply(Void t) {
 				dialogStage.showAndWait();
 				return null;
 			}
 		});
-        
-    	viewModel.setDialogCloseFunction(new Function<Void, Void>() {
+
+		viewModel.setDialogCloseFunction(new Function<Void, Void>() {
 
 			@Override
 			public Void apply(Void t) {
@@ -110,29 +110,30 @@ public class ContactEditDialog implements FxmlView<ContactEditDialogModel>,
 				return null;
 			}
 		});
-        
-	}
-	
-	StringConverter<LocalDate> converter = new StringConverter<LocalDate>() {
-		DateTimeFormatter DATE_FORMATTER = 
-	            DateTimeFormatter.ofPattern(DATE_PATTERN);
-		@Override
-        public String toString(LocalDate date) {
-            if (date == null) {
-                return null;
-            }
-            return DATE_FORMATTER.format(date);
-        }
-        @Override
-        public LocalDate fromString(String string) {
-            if (string != null && !string.isEmpty()) {
-                return LocalDate.parse(string, DATE_FORMATTER);
-            } else {
-                return null;
-            }
-        }
-    };
 
+	}
+
+	StringConverter<LocalDate> converter = new StringConverter<LocalDate>() {
+		DateTimeFormatter DATE_FORMATTER = DateTimeFormatter
+				.ofPattern(DATE_PATTERN);
+
+		@Override
+		public String toString(LocalDate date) {
+			if (date == null) {
+				return null;
+			}
+			return DATE_FORMATTER.format(date);
+		}
+
+		@Override
+		public LocalDate fromString(String string) {
+			if (string != null && !string.isEmpty()) {
+				return LocalDate.parse(string, DATE_FORMATTER);
+			} else {
+				return null;
+			}
+		}
+	};
 
 	@FXML
 	private void handleCancel() {

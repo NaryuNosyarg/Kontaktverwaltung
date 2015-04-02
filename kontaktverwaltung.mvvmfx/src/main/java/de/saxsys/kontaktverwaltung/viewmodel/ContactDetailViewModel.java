@@ -1,7 +1,6 @@
 package de.saxsys.kontaktverwaltung.viewmodel;
 
 import java.time.LocalDate;
-import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.function.Function;
 
@@ -19,9 +18,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Alert.AlertType;
+import javafx.collections.ObservableList;
 
 @Singleton
 public class ContactDetailViewModel implements ViewModel {
@@ -37,13 +34,12 @@ public class ContactDetailViewModel implements ViewModel {
 	private StringProperty emailProperty = new SimpleStringProperty();
 	private StringProperty telephoneProperty = new SimpleStringProperty();
 
-	
 	private Function<Void, Void> detailShowFunction;
 	private Function<Void, Void> detailCloseFunction;
-	private Function<Void,Void> detailShowAndWaitFunction;
+	private Function<Void, Void> detailShowAndWaitFunction;
 
 	private Verwaltung verwaltung;
-	 
+
 	public void setDetailShowFunction(Function<Void, Void> detailShowFunction) {
 		this.detailShowFunction = detailShowFunction;
 	}
@@ -51,17 +47,14 @@ public class ContactDetailViewModel implements ViewModel {
 	public void setDetailCloseFunction(Function<Void, Void> detailCloseFunction) {
 		this.detailCloseFunction = detailCloseFunction;
 	}
-	
+
 	public void setDetailShowAndWaitFunction(
-			Function<Void,Void> detailShowAndWaitFunction) {
+			Function<Void, Void> detailShowAndWaitFunction) {
 		this.detailShowAndWaitFunction = detailShowAndWaitFunction;
 	}
 
-
-
 	public ContactDetailViewModel(Verwaltung verwaltung) {
 		this.verwaltung = verwaltung;
-		
 
 		selectedContact.addListener(new ChangeListener<Contact>() {
 
@@ -100,14 +93,11 @@ public class ContactDetailViewModel implements ViewModel {
 
 		formattedBirthDateProperty.bind(formattedDateBinding);
 	}
-	
-	
+
 	public void show(Contact contact) {
 		selectedContactProperty().set(contact);
 		detailShowAndWaitFunction.apply(null);
 	}
-	
-	
 
 	public StringProperty contactNameProperty() {
 		return contactNameProperty;
@@ -140,6 +130,14 @@ public class ContactDetailViewModel implements ViewModel {
 	public ObjectProperty<Contact> selectedContactProperty() {
 		return selectedContact;
 	}
+	//for Test
+	public void setSelectedContact(Contact contact) {
+		this.selectedContact.set(contact);
+	}
+	//for Test
+	public ObservableList<Contact> listProperty() {
+		return verwaltung.getContactList();
+	}
 
 	public void edit(Function<Contact, Boolean> editFunction) {
 		Contact selectedPerson = selectedContactProperty().getValue();
@@ -154,21 +152,8 @@ public class ContactDetailViewModel implements ViewModel {
 
 	public void remove() {
 		Contact selectedPerson = selectedContactProperty().getValue();
-
-		Alert alert = new Alert(AlertType.CONFIRMATION);
-		alert.setTitle("Achtung!");
-		alert.setHeaderText(null);
-		alert.setContentText("Wollen Sie den Kontakt wirklich löschen?");
-
-		Optional<ButtonType> result = alert.showAndWait();
-		if (result.get() == ButtonType.OK) {
-			verwaltung.removeContact(selectedPerson);
-			detailCloseFunction.apply(null);
-		} else {
-			detailShowFunction.apply(null);
-		}
-
+		verwaltung.removeContact(selectedPerson);
+		detailCloseFunction.apply(null);
 	}
-
 
 }

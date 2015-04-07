@@ -42,6 +42,10 @@ public class ContactListOverviewModelTest {
 		assertThat(viewModel.listProperty()).hasSize(2);
 		assertThat(viewModel.listProperty().get(0).getName())
 				.isEqualTo("Bruce");
+		assertThat(viewModel.listProperty().get(0).getFamilyName())
+		.isEqualTo("Wayne");
+		assertThat(viewModel.listProperty().get(1).getName())
+		.isEqualTo("Dick");
 	}
 
 	@Test

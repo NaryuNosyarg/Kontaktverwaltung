@@ -197,4 +197,9 @@ public class ContactEditDialogModel implements ViewModel {
 		return selectedContact;
 	}
 
+	// for Test
+	public void setSelectedContact(Contact contact) {
+		this.selectedContact.set(contact);
+	}
+
 }

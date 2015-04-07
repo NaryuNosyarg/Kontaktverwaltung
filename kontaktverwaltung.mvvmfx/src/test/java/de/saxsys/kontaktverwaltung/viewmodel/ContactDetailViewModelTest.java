@@ -45,11 +45,22 @@ public class ContactDetailViewModelTest {
 		// given
 		assertThat(viewModel.selectedContactProperty()).isNotNull();
 		viewModel.setSelectedContact(alfred);
+		assertThat(viewModel.contactNameProperty().get()).isEqualTo(
+				"Alfred Pennyworth");
+		assertThat(viewModel.streetProperty().get()).isEqualTo("Wayne Manor");
+		assertThat(viewModel.zipCodePlaceProperty().get()).isEqualTo(
+				"666 Gotham City");
+		assertThat(viewModel.countryProperty().get()).isEqualTo("Rhode Island");
+		assertThat(viewModel.birthDateProperty().get()).isEqualTo("25.07.1940");
+
 		// when
 		viewModel.selectedContactProperty().getValue().getLivingPlace()
 				.setStreet("Crime Alley");
+		viewModel.selectedContactProperty().getValue()
+				.setBirthDate(LocalDate.of(1941, 8, 21));
 		// then
 		assertThat(viewModel.streetProperty().get()).isEqualTo("Crime Alley");
+		assertThat(viewModel.birthDateProperty().get()).isEqualTo("21.08.1941");
 	}
 
 	@Test

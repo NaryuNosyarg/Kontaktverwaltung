@@ -48,5 +48,28 @@
     <artifactId>openjfx-dialogs</artifactId>
     <version>1.0.2</version>
 </dependency>
+<dependency>
+    <groupId>emma</groupId>
+    <artifactId>emma</artifactId>
+    <version>2.1.5320</version>
+</dependency>
+<dependency>
+        <groupId>org.testfx</groupId>
+        <artifactId>testfx-core</artifactId>
+	<version>4.0.1-alpha</version>
+	<scope>test</scope>
+    </dependency>
+<dependency>
+    <groupId>org.testfx</groupId>
+    <artifactId>testfx-junit</artifactId>
+    <version>4.0.1-alpha</version>
+    <scope>test</scope>
+</dependency>
+<dependency>
+			<groupId>org.loadui</groupId>
+			<artifactId>testFx</artifactId>
+			<version>3.1.0</version>
+			<scope>test</scope>
+		</dependency>
   </dependencies>
 </project>

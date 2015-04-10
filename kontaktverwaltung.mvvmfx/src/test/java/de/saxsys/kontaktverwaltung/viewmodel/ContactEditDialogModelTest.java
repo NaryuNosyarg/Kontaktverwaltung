@@ -62,7 +62,6 @@ public class ContactEditDialogModelTest {
 
 		// when
 		viewModel.ok();
-
 		// then
 		assertThat(viewModel.isOkClicked()).isTrue();
 	}

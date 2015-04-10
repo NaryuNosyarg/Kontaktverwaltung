@@ -8,6 +8,8 @@ import java.util.function.Function;
 
 import javax.inject.Singleton;
 
+import org.controlsfx.dialog.Dialogs;
+
 import de.saxsys.kontaktverwaltung.model.Contact;
 import de.saxsys.kontaktverwaltung.viewmodel.ContactEditDialogModel;
 import de.saxsys.mvvmfx.FluentViewLoader;
@@ -111,6 +113,16 @@ public class ContactEditDialog implements FxmlView<ContactEditDialogModel>,
 			}
 		});
 
+		viewModel.setMessageFunction(new Function<String, Void>() {
+
+			@Override
+			public Void apply(String errorMessage) {
+				Dialogs.create().title("Ups!")
+				.masthead("Bitte Felder richtig ausfüllen!")
+				.message(errorMessage).showError();
+				return null;
+			}
+		});
 	}
 
 	StringConverter<LocalDate> converter = new StringConverter<LocalDate>() {
@@ -144,5 +156,7 @@ public class ContactEditDialog implements FxmlView<ContactEditDialogModel>,
 	private void handleOk() {
 		viewModel.ok();
 	}
+
+	
 
 }

@@ -5,8 +5,6 @@ import java.util.function.Function;
 
 import javax.inject.Singleton;
 
-import org.controlsfx.dialog.Dialogs;
-
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -21,6 +19,7 @@ public class ContactEditDialogModel implements ViewModel {
 
 	private Function<Void, Void> dialogShowAndWaitFunction;
 	private Function<Void, Void> dialogCloseFunction;
+	private Function<String, Void> messageFunction;
 	private boolean okClicked = false;
 
 	private ObjectProperty<Contact> selectedContact = new SimpleObjectProperty<>();
@@ -34,6 +33,7 @@ public class ContactEditDialogModel implements ViewModel {
 	private ObjectProperty<LocalDate> birthDateProperty = new SimpleObjectProperty<LocalDate>();
 	private StringProperty emailProperty = new SimpleStringProperty();
 	private StringProperty telephoneProperty = new SimpleStringProperty();
+	
 
 	public void setDialogShowAndWaitFunction(
 			Function<Void, Void> dialogShowAndWaitFunction) {
@@ -149,12 +149,13 @@ public class ContactEditDialogModel implements ViewModel {
 		if (errorMessage.length() == 0) {
 			return true;
 		} else {
-			// Show the error message.
-			Dialogs.create().title("Ups!")
-					.masthead("Bitte Felder richtig ausfüllen!")
-					.message(errorMessage).showError();
+			messageFunction.apply(errorMessage);
 			return false;
 		}
+	}
+	
+	public void setMessageFunction(Function<String, Void> messageFunction) {
+		this.messageFunction = messageFunction;
 	}
 
 	public StringProperty nameProperty() {

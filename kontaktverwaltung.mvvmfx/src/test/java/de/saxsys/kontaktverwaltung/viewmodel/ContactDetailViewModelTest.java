@@ -23,7 +23,7 @@ public class ContactDetailViewModelTest {
 
 	@Before
 	public void setup() {
-		
+
 		easyDI = new EasyDI();
 		easyDI.bindInterface(Verwaltung.class, Kontaktverwaltung.class);
 		viewModel = easyDI.getInstance(ContactDetailViewModel.class);
@@ -91,7 +91,7 @@ public class ContactDetailViewModelTest {
 	public void testRemove() {
 		assertThat(viewModel.selectedContactProperty()).isNotNull();
 		assertThat(viewModel.listProperty()).hasSize(2);
-		viewModel.setSelectedContact(alfred);
+		viewModel.setSelectedContact(viewModel.listProperty().get(1));
 
 		viewModel.setDetailCloseFunction(new Function<Void, Void>() {
 
@@ -101,11 +101,8 @@ public class ContactDetailViewModelTest {
 			}
 		});
 
-		viewModel.listProperty().add(alfred);
-		assertThat(viewModel.listProperty()).hasSize(3);
-
 		viewModel.remove();
-		assertThat(viewModel.listProperty()).hasSize(2);
+		assertThat(viewModel.listProperty()).hasSize(1);
 	}
 
 }

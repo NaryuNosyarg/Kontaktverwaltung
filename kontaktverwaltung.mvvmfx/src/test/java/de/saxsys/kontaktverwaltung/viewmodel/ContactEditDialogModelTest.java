@@ -10,6 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import de.saxsys.kontaktverwaltung.model.Address;
+import de.saxsys.kontaktverwaltung.model.CommunicationInfo;
 import de.saxsys.kontaktverwaltung.model.Contact;
 import de.saxsys.kontaktverwaltung.model.Kontaktverwaltung;
 import de.saxsys.kontaktverwaltung.model.Verwaltung;
@@ -39,6 +40,16 @@ public class ContactEditDialogModelTest {
 		Address address = new Address("1", "Wayne Manor", "Gotham City", "666",
 				"Rhode Island", "Wayne Enterprise", "007");
 		alfred.setLivingPlace(address);
+		CommunicationInfo ci = new CommunicationInfo();
+		ci.setTelephones("01748957642");
+		ci.setEmails("alfred.pennyworth@wayneenterprises.com");
+		alfred.setCommunicationInfo(ci);
+		
+		try {
+			martha = new Contact(null, null, null, null);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
 	
 		
 		viewModel.setDialogCloseFunction(new Function<Void, Void>() {
@@ -61,6 +72,7 @@ public class ContactEditDialogModelTest {
 		assertThat(viewModel.isOkClicked()).isFalse();
 
 		// when
+		viewModel.setSelectedContact(alfred);
 		viewModel.ok();
 		// then
 		assertThat(viewModel.isOkClicked()).isTrue();
@@ -89,27 +101,40 @@ public class ContactEditDialogModelTest {
 		viewModel.ok();
 		//then
 		assertThat(
-				viewModel.selectedContactProperty().getValue().nameProperty())
-				.isEqualTo("Martha");
+				viewModel.selectedContactProperty().getValue().nameProperty()
+						.get()).isEqualTo("Martha");
+		assertThat(
+				viewModel.selectedContactProperty().getValue()
+						.birthDateProperty().get()).isEqualTo(LocalDate.of(1944, 10, 14));
 		assertThat(viewModel.isOkClicked()).isTrue();
+		assertThat(
+				viewModel.selectedContactProperty().getValue()
+						.getCommunicationInfo().emailsProperty().get())
+				.isEqualTo("marthawayne@wayneindustries.com");
 	}
 
 	@Test
 	public void testContactEditDialogModel() {
-		//given
+		// given
 		viewModel.setSelectedContact(alfred);
-		assertThat(viewModel.nameProperty().get()).isEqualTo(
-				"Alfred");
-		//when
-		viewModel.selectedContactProperty().getValue().setName("Jarvis");
+		assertThat(viewModel.nameProperty().get()).isEqualTo("Alfred");
+		assertThat(viewModel.familyNameProperty().get())
+				.isEqualTo("Pennyworth");
+		assertThat(viewModel.streetProperty().get()).isEqualTo("Wayne Manor");
+		assertThat(viewModel.zipCodeProperty().get()).isEqualTo("666");
+		assertThat(viewModel.placeProperty().get()).isEqualTo("Gotham City");
+		assertThat(viewModel.countryProperty().get()).isEqualTo("Rhode Island");
+		assertThat(viewModel.birthDateProperty().get()).isEqualTo(
+				LocalDate.of(1940, 07, 25));
+		assertThat(viewModel.emailProperty().get()).isEqualTo(
+				"alfred.pennyworth@wayneenterprises.com");
+		assertThat(viewModel.telephoneProperty().get())
+				.isEqualTo("01748957642");
+		// when
+		viewModel.nameProperty().set("Jarvis");
 		//then
 		assertThat(viewModel.nameProperty().get()).isNotNull();
 		assertThat(viewModel.nameProperty().get()).isEqualTo("Jarvis");
-		//when
-		viewModel.selectedContactProperty().getValue()
-		.setBirthDate(LocalDate.of(1941, 8, 21));
-		//then
-		assertThat(viewModel.birthDateProperty().get()).isEqualTo("21.08.1941");
 	}
 
 }

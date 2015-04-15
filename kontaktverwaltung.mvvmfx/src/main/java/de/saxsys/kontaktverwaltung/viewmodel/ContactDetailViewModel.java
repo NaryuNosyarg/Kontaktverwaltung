@@ -1,6 +1,7 @@
 package de.saxsys.kontaktverwaltung.viewmodel;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.function.Function;
 
@@ -9,6 +10,7 @@ import javax.inject.Singleton;
 import de.saxsys.kontaktverwaltung.model.Contact;
 import de.saxsys.kontaktverwaltung.model.Verwaltung;
 import de.saxsys.kontaktverwaltung.util.DateUtil;
+import de.saxsys.mvvmfx.MvvmFX;
 import de.saxsys.mvvmfx.ViewModel;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringBinding;
@@ -18,7 +20,6 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.ObservableList;
 
 @Singleton
 public class ContactDetailViewModel implements ViewModel {
@@ -130,12 +131,14 @@ public class ContactDetailViewModel implements ViewModel {
 	public ObjectProperty<Contact> selectedContactProperty() {
 		return selectedContact;
 	}
-	//for Test
+
+	// for Test
 	public void setSelectedContact(Contact contact) {
 		this.selectedContact.set(contact);
 	}
-	//for Test
-	public ObservableList<Contact> listProperty() {
+
+	// for Test
+	public List<Contact> listProperty() {
 		return verwaltung.getContactList();
 	}
 
@@ -153,6 +156,7 @@ public class ContactDetailViewModel implements ViewModel {
 	public void remove() {
 		Contact selectedPerson = selectedContactProperty().getValue();
 		verwaltung.removeContact(selectedPerson);
+		MvvmFX.getNotificationCenter().publish("update");
 		detailCloseFunction.apply(null);
 	}
 

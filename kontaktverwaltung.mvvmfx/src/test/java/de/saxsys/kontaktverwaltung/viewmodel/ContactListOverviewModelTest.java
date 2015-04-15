@@ -7,7 +7,6 @@ import java.text.ParseException;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.mockito.Mockito.*;
 import de.saxsys.kontaktverwaltung.model.Kontaktverwaltung;
 import de.saxsys.kontaktverwaltung.model.Verwaltung;
 import eu.lestard.easydi.EasyDI;
@@ -42,10 +41,9 @@ public class ContactListOverviewModelTest {
 		assertThat(viewModel.listProperty()).hasSize(2);
 		assertThat(viewModel.listProperty().get(0).getName())
 				.isEqualTo("Bruce");
-		assertThat(viewModel.listProperty().get(0).getFamilyName())
-		.isEqualTo("Wayne");
-		assertThat(viewModel.listProperty().get(1).getName())
-		.isEqualTo("Dick");
+		assertThat(viewModel.listProperty().get(0).getFamilyName()).isEqualTo(
+				"Wayne");
+		assertThat(viewModel.listProperty().get(1).getName()).isEqualTo("Dick");
 	}
 
 	@Test

@@ -1,6 +1,5 @@
 package de.saxsys.kontaktverwaltung.model;
 
-
 import java.text.ParseException;
 import java.time.LocalDate;
 
@@ -15,9 +14,8 @@ public class Contact {
 	private final StringProperty name;
 	private final StringProperty familyName;
 	private Address livingPlace;
-	private  final ObjectProperty<LocalDate> birthDate;
+	private final ObjectProperty<LocalDate> birthDate;
 	private CommunicationInfo communicationInfo;
-	
 
 	public Contact(String cId, String cName, String cFamilyName,
 			LocalDate cBirthDate) throws ParseException {
@@ -28,7 +26,7 @@ public class Contact {
 		this.livingPlace = new Address(this.getId(), "", "", "", "", "", "");
 		this.birthDate = new SimpleObjectProperty<LocalDate>(cBirthDate);
 		this.communicationInfo = new CommunicationInfo();
-		
+
 	}
 
 	public String getId() {
@@ -57,7 +55,7 @@ public class Contact {
 
 	public void setId(String newId) {
 		this.id.set(newId);
-    }
+	}
 
 	public void setName(String newName) {
 		this.name.set(newName);
@@ -93,6 +91,38 @@ public class Contact {
 
 	public ObjectProperty<LocalDate> birthDateProperty() {
 		return birthDate;
+	}
+
+	public StringProperty streetProperty() {
+		return livingPlace.streetProperty();
+	}
+
+	public StringProperty placeProperty() {
+		return livingPlace.placeProperty();
+	}
+
+	public StringProperty zipCodeProperty() {
+		return livingPlace.zipCodeProperty();
+	}
+
+	public StringProperty countryProperty() {
+		return livingPlace.countryProperty();
+	}
+
+	public StringProperty buildingProperty() {
+		return livingPlace.buildingProperty();
+	}
+
+	public StringProperty roomProperty() {
+		return livingPlace.roomProperty();
+	}
+
+	public StringProperty emailsProperty() {
+		return communicationInfo.emailsProperty();
+	}
+
+	public StringProperty telephonesProperty() {
+		return communicationInfo.telephonesProperty();
 	}
 
 	public String toString() {

@@ -3,37 +3,40 @@ package de.saxsys.kontaktverwaltung.viewmodel;
 import java.time.LocalDate;
 import java.util.function.Function;
 
-import javax.inject.Singleton;
-
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.Property;
+import javafx.beans.property.ReadOnlyBooleanProperty;
+import javafx.beans.property.ReadOnlyBooleanWrapper;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.scene.control.Control;
+
+import javax.inject.Singleton;
+
+import org.controlsfx.validation.ValidationSupport;
+import org.controlsfx.validation.Validator;
+
 import de.saxsys.kontaktverwaltung.model.Contact;
 import de.saxsys.mvvmfx.ViewModel;
+import de.saxsys.mvvmfx.utils.mapping.ModelWrapper;
 
 @Singleton
 public class ContactEditDialogModel implements ViewModel {
 
+	private ModelWrapper<Contact> contactWrapper = new ModelWrapper<>();
+	ValidationSupport validationSupport = new ValidationSupport();
+
+	private ReadOnlyBooleanWrapper valid = new ReadOnlyBooleanWrapper();
+
 	private Function<Void, Void> dialogShowAndWaitFunction;
 	private Function<Void, Void> dialogCloseFunction;
 	private Function<String, Void> messageFunction;
+	private String errorMessage = "";
+
 	private boolean okClicked = false;
 
 	private ObjectProperty<Contact> selectedContact = new SimpleObjectProperty<>();
-
-	private StringProperty nameProperty = new SimpleStringProperty();
-	private StringProperty familyNameProperty = new SimpleStringProperty();
-	private StringProperty streetProperty = new SimpleStringProperty();
-	private StringProperty zipCodeProperty = new SimpleStringProperty();
-	private StringProperty placeProperty = new SimpleStringProperty();
-	private StringProperty countryProperty = new SimpleStringProperty();
-	private ObjectProperty<LocalDate> birthDateProperty = new SimpleObjectProperty<LocalDate>();
-	private StringProperty emailProperty = new SimpleStringProperty();
-	private StringProperty telephoneProperty = new SimpleStringProperty();
-	
 
 	public void setDialogShowAndWaitFunction(
 			Function<Void, Void> dialogShowAndWaitFunction) {
@@ -44,8 +47,14 @@ public class ContactEditDialogModel implements ViewModel {
 		this.dialogCloseFunction = dialogCloseFunction;
 	}
 
+	public void setMessageFunction(Function<String, Void> messageFunction) {
+		this.messageFunction = messageFunction;
+	}
+
 	public void show(Contact contact) {
 		selectedContactProperty().set(contact);
+		this.contactWrapper.set(selectedContact.getValue());
+		contactWrapper.reload();
 
 		dialogShowAndWaitFunction.apply(null);
 	}
@@ -60,19 +69,8 @@ public class ContactEditDialogModel implements ViewModel {
 	}
 
 	public void ok() {
-
-		Contact contact = selectedContact.getValue();
 		if (isInputValid()) {
-			contact.setName(nameProperty.get());
-			contact.setFamilyName(familyNameProperty.get());
-			contact.getLivingPlace().setStreet(streetProperty.get());
-			contact.getLivingPlace().setZipCode(zipCodeProperty.get());
-			contact.getLivingPlace().setPlace(placeProperty.get());
-			contact.getLivingPlace().setCountry(countryProperty.get());
-			contact.setBirthDate(birthDateProperty.get());
-			contact.getCommunicationInfo().setTelephones(
-					telephoneProperty.get());
-			contact.getCommunicationInfo().setEmails(emailProperty.get());
+			contactWrapper.commit();
 
 			okClicked = true;
 			dialogCloseFunction.apply(null);
@@ -80,6 +78,8 @@ public class ContactEditDialogModel implements ViewModel {
 	}
 
 	public ContactEditDialogModel() {
+		valid.bind(validationSupport.invalidProperty().isNull()
+				.or(validationSupport.invalidProperty().isEqualTo(false)));
 
 		selectedContact.addListener(new ChangeListener<Contact>() {
 
@@ -87,111 +87,96 @@ public class ContactEditDialogModel implements ViewModel {
 			public void changed(ObservableValue<? extends Contact> arg0,
 					Contact oldContact, Contact newContact) {
 				if (newContact != null) {
-					Contact contact = selectedContact.getValue();
-
-					nameProperty.set(contact.getName());
-					familyNameProperty.set(contact.getFamilyName());
-					streetProperty.set(contact.getLivingPlace().getStreet());
-					zipCodeProperty.set(contact.getLivingPlace().getZipCode());
-					placeProperty.set(contact.getLivingPlace().getPlace());
-					countryProperty.set(contact.getLivingPlace().getCountry());
-					birthDateProperty.set(contact.getBirthDate());
-					emailProperty.set(contact.getCommunicationInfo()
-							.getEmails());
-					telephoneProperty.set(contact.getCommunicationInfo()
-							.getTelephones());
-
-					okClicked = false;
+					contactWrapper.reload();
 				}
 			}
 		});
+	}
 
+	public void initValidationForName(Control input) {
+		validationSupport.registerValidator(input, true, Validator.createEmptyValidator(errorMessage  += "Geben Sie einen Vornamen ein!\n"));
+	}
+	
+	public void initValidationForFamilyName(Control input) {
+		validationSupport.registerValidator(input, true, Validator.createEmptyValidator(errorMessage  += "Geben Sie einen Nachnamen ein!\n"));
+	}
+	
+	public void initValidationForStreet(Control input) {
+		validationSupport.registerValidator(input, false, Validator.createEmptyValidator(errorMessage  += "Geben Sie eine Straße ein!\n"));
+	}
+	
+	public void initValidationForZipCode(Control input) {
+		validationSupport.registerValidator(input, false, Validator.createEmptyValidator(errorMessage  += "Geben Sie eine Postleitzahl ein!\n"));
+	}
+	
+	public void initValidationForPlace(Control input) {
+		validationSupport.registerValidator(input, false, Validator.createEmptyValidator(errorMessage  += "Geben Sie einen Ort ein!\n"));
+	}
+	
+	public void initValidationForCountry(Control input) {
+		validationSupport.registerValidator(input, false, Validator.createEmptyValidator(errorMessage  += "Geben Sie ein Land ein!\n"));
+	}
+	
+	public void initValidationForBirthDate(Control input) {
+		validationSupport.registerValidator(input, true, Validator.createEmptyValidator(errorMessage  += "Geben Sie ein Geburtsdatum ein!\n"));
+	}
+	
+	public void initValidationForEmail(Control input) {
+		validationSupport.registerValidator(input, false, Validator.createEmptyValidator(errorMessage  += "Geben Sie eine E-Mail-Adresse ein!\n"));
+	}
+	
+	public void initValidationForTelephone(Control input) {
+		validationSupport.registerValidator(input, false, Validator.createEmptyValidator(errorMessage  += "Geben Sie eine Telefonnummer ein!\n"));
+	}
+
+	public ReadOnlyBooleanProperty validProperty() {
+		return valid.getReadOnlyProperty();
 	}
 
 	private boolean isInputValid() {
-		String errorMessage = "";
 
-		if (nameProperty.get() == null || nameProperty.get().length() == 0) {
-			errorMessage += "Geben Sie einen Vornamen ein!\n";
-		}
-		if (familyNameProperty.get() == null
-				|| familyNameProperty.get().length() == 0) {
-			errorMessage += "Geben Sie einen Nachnamen ein!\n";
-		}
-		if (streetProperty.get() == null || streetProperty.get().length() == 0) {
-			errorMessage += "Geben Sie eine Straße ein!\n";
-		}
-
-		if (zipCodeProperty.get() == null
-				|| zipCodeProperty.get().length() == 0) {
-			errorMessage += "Geben Sie eine Postleitzahl ein!\n";
-		}
-
-		if (placeProperty.get() == null || placeProperty.get().length() == 0) {
-			errorMessage += "Geben Sie einen Ort ein!\n";
-		}
-		if (countryProperty.get() == null
-				|| countryProperty.get().length() == 0) {
-			errorMessage += "Geben Sie ein Land ein!\n";
-		}
-
-		if (birthDateProperty.get() == null) {
-			errorMessage += "Geben Sie ein Geburtsdatum ein!\n";
-		}
-		if (emailProperty.get() == null || emailProperty.get().length() == 0) {
-			errorMessage += "Geben Sie eine E-Mail-Adresse ein!\n";
-		}
-		if (telephoneProperty.get() == null
-				|| telephoneProperty.get().length() == 0) {
-			errorMessage += "Geben Sie eine Telefonnummer ein!\n";
-		}
-
-		if (errorMessage.length() == 0) {
+		if (validProperty().get()) {
 			return true;
 		} else {
 			messageFunction.apply(errorMessage);
 			return false;
 		}
 	}
+
+	public Property<String> nameProperty() {
+		return contactWrapper.field("name", Contact::nameProperty);
+	}
 	
-	public void setMessageFunction(Function<String, Void> messageFunction) {
-		this.messageFunction = messageFunction;
+	public Property<String> familyNameProperty() {
+		return contactWrapper.field("familyName", Contact::familyNameProperty);
 	}
 
-	public StringProperty nameProperty() {
-		return nameProperty;
+	public Property<String> streetProperty() {
+		return contactWrapper.field("street", Contact::streetProperty);
 	}
 
-	public StringProperty familyNameProperty() {
-		return familyNameProperty;
+	public Property<String> zipCodeProperty() {
+		return contactWrapper.field("zipCode", Contact::zipCodeProperty);
 	}
 
-	public StringProperty streetProperty() {
-		return streetProperty;
+	public Property<String> placeProperty() {
+		return contactWrapper.field("place", Contact::placeProperty);
 	}
 
-	public StringProperty zipCodeProperty() {
-		return zipCodeProperty;
+	public Property<String> countryProperty() {
+		return contactWrapper.field("country", Contact::countryProperty);
 	}
 
-	public StringProperty placeProperty() {
-		return placeProperty;
+	public Property<LocalDate> birthDateProperty() {
+		return contactWrapper.field("birthDate", Contact::birthDateProperty);
 	}
 
-	public StringProperty countryProperty() {
-		return countryProperty;
+	public Property<String> emailProperty() {
+		return contactWrapper.field("email", Contact::emailsProperty);
 	}
 
-	public ObjectProperty<LocalDate> birthDateProperty() {
-		return birthDateProperty;
-	}
-
-	public StringProperty emailProperty() {
-		return emailProperty;
-	}
-
-	public StringProperty telephoneProperty() {
-		return telephoneProperty;
+	public Property<String> telephoneProperty() {
+		return contactWrapper.field("telephone", Contact::telephonesProperty);
 	}
 
 	public ObjectProperty<Contact> selectedContactProperty() {

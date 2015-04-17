@@ -95,6 +95,16 @@ public class ContactEditDialog implements FxmlView<ContactEditDialogModel>,
 		emailField.textProperty().bindBidirectional(viewModel.emailProperty());
 
 		birthDateField.setConverter(converter);
+		
+		viewModel.initValidationForName(nameField);
+		viewModel.initValidationForFamilyName(familyNameField);
+		viewModel.initValidationForStreet(streetField);
+		viewModel.initValidationForZipCode(zipCodeField);
+		viewModel.initValidationForPlace(placeField);
+		viewModel.initValidationForCountry(countryField);
+		viewModel.initValidationForBirthDate(birthDateField);
+		viewModel.initValidationForTelephone(telephoneField);
+		viewModel.initValidationForEmail(emailField);
 
 		viewModel.setDialogShowAndWaitFunction(new Function<Void, Void>() {
 			@Override

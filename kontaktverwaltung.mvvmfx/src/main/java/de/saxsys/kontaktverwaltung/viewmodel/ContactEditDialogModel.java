@@ -18,6 +18,9 @@ import org.controlsfx.validation.ValidationSupport;
 import org.controlsfx.validation.Validator;
 
 import de.saxsys.kontaktverwaltung.model.Contact;
+import de.saxsys.kontaktverwaltung.util.BirthDateValidator;
+import de.saxsys.kontaktverwaltung.util.EmailValidator;
+import de.saxsys.kontaktverwaltung.util.TelephoneValidator;
 import de.saxsys.mvvmfx.ViewModel;
 import de.saxsys.mvvmfx.utils.mapping.ModelWrapper;
 
@@ -32,12 +35,13 @@ public class ContactEditDialogModel implements ViewModel {
 	private Function<Void, Void> dialogShowAndWaitFunction;
 	private Function<Void, Void> dialogCloseFunction;
 	private Function<String, Void> messageFunction;
-	private String errorMessage = "";
+	private String errorMessage;
 
 	private boolean okClicked = false;
 
 	private ObjectProperty<Contact> selectedContact = new SimpleObjectProperty<>();
 
+	
 	public void setDialogShowAndWaitFunction(
 			Function<Void, Void> dialogShowAndWaitFunction) {
 		this.dialogShowAndWaitFunction = dialogShowAndWaitFunction;
@@ -80,6 +84,7 @@ public class ContactEditDialogModel implements ViewModel {
 	public ContactEditDialogModel() {
 		valid.bind(validationSupport.invalidProperty().isNull()
 				.or(validationSupport.invalidProperty().isEqualTo(false)));
+		
 
 		selectedContact.addListener(new ChangeListener<Contact>() {
 
@@ -94,43 +99,47 @@ public class ContactEditDialogModel implements ViewModel {
 	}
 
 	public void initValidationForName(Control input) {
-		validationSupport.registerValidator(input, true, Validator.createEmptyValidator(errorMessage  += "Geben Sie einen Vornamen ein!\n"));
+		validationSupport.registerValidator(input, true, Validator.createEmptyValidator("Geben Sie einen Vornamen ein!"));
 	}
 	
 	public void initValidationForFamilyName(Control input) {
-		validationSupport.registerValidator(input, true, Validator.createEmptyValidator(errorMessage  += "Geben Sie einen Nachnamen ein!\n"));
+		validationSupport.registerValidator(input, true, Validator.createEmptyValidator("Geben Sie einen Nachnamen ein!"));
 	}
 	
 	public void initValidationForStreet(Control input) {
-		validationSupport.registerValidator(input, false, Validator.createEmptyValidator(errorMessage  += "Geben Sie eine Straße ein!\n"));
+		validationSupport.registerValidator(input, false, Validator.createEmptyValidator("Geben Sie eine Straße ein!\n"));
 	}
 	
 	public void initValidationForZipCode(Control input) {
-		validationSupport.registerValidator(input, false, Validator.createEmptyValidator(errorMessage  += "Geben Sie eine Postleitzahl ein!\n"));
+		validationSupport.registerValidator(input, false, Validator.createEmptyValidator("Geben Sie eine Postleitzahl ein!\n"));
 	}
 	
 	public void initValidationForPlace(Control input) {
-		validationSupport.registerValidator(input, false, Validator.createEmptyValidator(errorMessage  += "Geben Sie einen Ort ein!\n"));
+		validationSupport.registerValidator(input, false, Validator.createEmptyValidator("Geben Sie einen Ort ein!\n"));
 	}
 	
 	public void initValidationForCountry(Control input) {
-		validationSupport.registerValidator(input, false, Validator.createEmptyValidator(errorMessage  += "Geben Sie ein Land ein!\n"));
+		validationSupport.registerValidator(input, false, Validator.createEmptyValidator("Geben Sie ein Land ein!\n"));
 	}
 	
 	public void initValidationForBirthDate(Control input) {
-		validationSupport.registerValidator(input, true, Validator.createEmptyValidator(errorMessage  += "Geben Sie ein Geburtsdatum ein!\n"));
+		validationSupport.registerValidator(input, true, new BirthDateValidator());
 	}
 	
 	public void initValidationForEmail(Control input) {
-		validationSupport.registerValidator(input, false, Validator.createEmptyValidator(errorMessage  += "Geben Sie eine E-Mail-Adresse ein!\n"));
+		validationSupport.registerValidator(input, false, new EmailValidator());
 	}
 	
 	public void initValidationForTelephone(Control input) {
-		validationSupport.registerValidator(input, false, Validator.createEmptyValidator(errorMessage  += "Geben Sie eine Telefonnummer ein!\n"));
+		validationSupport.registerValidator(input, false, new TelephoneValidator());
 	}
 
 	public ReadOnlyBooleanProperty validProperty() {
 		return valid.getReadOnlyProperty();
+	}
+	
+	private String setErrorMessage(){
+		return errorMessage = validationSupport.getValidationResult().getMessages().toString();
 	}
 
 	private boolean isInputValid() {
@@ -138,7 +147,7 @@ public class ContactEditDialogModel implements ViewModel {
 		if (validProperty().get()) {
 			return true;
 		} else {
-			messageFunction.apply(errorMessage);
+			messageFunction.apply(setErrorMessage());
 			return false;
 		}
 	}

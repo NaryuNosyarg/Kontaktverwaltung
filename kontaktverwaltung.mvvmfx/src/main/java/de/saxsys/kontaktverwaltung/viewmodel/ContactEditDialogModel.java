@@ -4,10 +4,10 @@ import java.time.LocalDate;
 import java.util.function.Function;
 
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.Property;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.ReadOnlyBooleanWrapper;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Control;
@@ -152,39 +152,39 @@ public class ContactEditDialogModel implements ViewModel {
 		}
 	}
 
-	public Property<String> nameProperty() {
+	public StringProperty nameProperty() {
 		return contactWrapper.field("name", Contact::nameProperty);
 	}
 	
-	public Property<String> familyNameProperty() {
+	public StringProperty familyNameProperty() {
 		return contactWrapper.field("familyName", Contact::familyNameProperty);
 	}
 
-	public Property<String> streetProperty() {
+	public StringProperty streetProperty() {
 		return contactWrapper.field("street", Contact::streetProperty);
 	}
 
-	public Property<String> zipCodeProperty() {
+	public StringProperty zipCodeProperty() {
 		return contactWrapper.field("zipCode", Contact::zipCodeProperty);
 	}
 
-	public Property<String> placeProperty() {
+	public StringProperty placeProperty() {
 		return contactWrapper.field("place", Contact::placeProperty);
 	}
 
-	public Property<String> countryProperty() {
+	public StringProperty countryProperty() {
 		return contactWrapper.field("country", Contact::countryProperty);
 	}
 
-	public Property<LocalDate> birthDateProperty() {
+	public ObjectProperty<LocalDate> birthDateProperty() {
 		return contactWrapper.field("birthDate", Contact::birthDateProperty);
 	}
 
-	public Property<String> emailProperty() {
+	public StringProperty emailProperty() {
 		return contactWrapper.field("email", Contact::emailsProperty);
 	}
 
-	public Property<String> telephoneProperty() {
+	public StringProperty telephoneProperty() {
 		return contactWrapper.field("telephone", Contact::telephonesProperty);
 	}
 
